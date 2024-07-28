@@ -3,13 +3,19 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 
 class Square extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: null,
-    };
+  render() {
+    return (
+      <button
+        className="square"
+        onClick={() => this.props.onClick()}
+      >
+        {this.props.value}
+      </button>
+    );
   }
+}
 //4state を初期化
+//9Square がクリックされると、Board から渡された onClick 関数がコールされる
 
     render() {
       return (
@@ -33,10 +39,22 @@ class Square extends React.Component {
     }
     //6初期 state として 9 個のマス目に対応する 9 個の null 値をセット
 
+    handleClick(i) {
+      const squares = this.state.squares.slice();
+      squares[i] = 'X';
+      this.setState({squares: squares});
+    }
+　　//10マス目をクリックすると値が書き込まれるように
+    
     renderSquare(i) {
-      return <Square value={this.state.squares[i]} />;
+      return 
+      <Square 
+      value={this.state.squares[i]}
+      onClick={() => this.handleClick(i)}
+      />;
       //1valueという値をSquareに渡す
       //7個別の Square に現在の値（'X'、'O' または null）を伝えるようにする
+      //8マス目がクリックされた時に Square にその関数を呼んでもらう
     }
   
     render() {
