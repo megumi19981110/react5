@@ -3,12 +3,23 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 
 class Square extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: null,
+    };
+  }
+//state を初期化
+
     render() {
       return (
-        <button className="square">
-          {this.props.value}
+        <button 
+        className="square" onClick={() => this.setState({value: 'X'})}>
+          {this.state.value}
         </button>
-        // 渡された値を表示
+        //1渡された値を表示
+        //2クリックされた場合に “X” と表示
+        //3クリックされた時に state の現在値を表示
       );
     }
   }
