@@ -9,7 +9,7 @@ class Square extends React.Component {
       value: null,
     };
   }
-//state を初期化
+//4state を初期化
 
     render() {
       return (
@@ -17,17 +17,26 @@ class Square extends React.Component {
         className="square" onClick={() => this.setState({value: 'X'})}>
           {this.state.value}
         </button>
-        //1渡された値を表示
-        //2クリックされた場合に “X” と表示
-        //3クリックされた時に state の現在値を表示
+        //2渡された値を表示
+        //3クリックされた場合に “X” と表示
+        //5クリックされた時に state の現在値を表示
       );
     }
   }
   
   class Board extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        squares: Array(9).fill(null),
+      };
+    }
+    //6初期 state として 9 個のマス目に対応する 9 個の null 値をセット
+
     renderSquare(i) {
-      return <Square value={i} />;
-      // valueという値をSquareに渡す
+      return <Square value={this.state.squares[i]} />;
+      //1valueという値をSquareに渡す
+      //7個別の Square に現在の値（'X'、'O' または null）を伝えるようにする
     }
   
     render() {
