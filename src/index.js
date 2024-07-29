@@ -39,6 +39,9 @@ function Square(props) {
 
     handleClick(i) {
       const squares = this.state.squares.slice();
+      if (calculateWinner(squares) || squares[i]) {
+        return;
+      }
       squares[i] = this.state.xIsNext ? 'X' : 'O';
       this.setState({
         squares: squares,
@@ -46,7 +49,8 @@ function Square(props) {
       });
     }
    //10マス目をクリックすると値が書き込まれるようにする
-   //X” 側と “O” 側が交互に着手できるようにする
+   //13X” 側と “O” 側が交互に着手できるようにする
+   //17ゲームの決着が既についている場合やクリックされたマス目が既に埋まっている場合に早期に return する
 
     
     renderSquare(i) {
@@ -61,8 +65,15 @@ function Square(props) {
     }
   
     render() {
-      const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-      //どちらのプレーヤの手番なのかを表示
+      const winner = calculateWinner(this.state.squares);
+      let status;
+      if (winner) {
+        status = 'Winner: ' + winner;
+      } else {
+        status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      }
+      //14どちらのプレーヤの手番なのかを表示
+      //16いずれかのプレーヤが勝利したかどうか判定
       
       return (
         <div>
@@ -128,4 +139,4 @@ function Square(props) {
     return null;
   }
   
-  //ゲームが決着して次の手番がなくなった時にそれを表示する
+  //15ゲームが決着して次の手番がなくなった時にそれを表示する
