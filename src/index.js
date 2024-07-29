@@ -2,20 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 
-class Square extends React.Component {
-  render() {
-    return (
-      <button
-        className="square"
-        onClick={() => this.props.onClick()}
-      >
-        {this.props.value}
-      </button>
-    );
-  }
+function Square(props) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
 }
 //4state を初期化
 //9Square がクリックされると、Board から渡された onClick 関数がコールされる
+//11シンプルに書くために、React.Component を継承するクラスを定義する代わりに、props を入力として受け取り表示すべき内容を返す関数を定義
 
     render() {
       return (
@@ -35,16 +31,23 @@ class Square extends React.Component {
       super(props);
       this.state = {
         squares: Array(9).fill(null),
+        xIsNext: true,
       };
     }
     //6初期 state として 9 個のマス目に対応する 9 個の null 値をセット
+    //12先手を “X” にする
 
     handleClick(i) {
       const squares = this.state.squares.slice();
-      squares[i] = 'X';
-      this.setState({squares: squares});
+      squares[i] = this.state.xIsNext ? 'X' : 'O';
+      this.setState({
+        squares: squares,
+        xIsNext: !this.state.xIsNext,
+      });
     }
-　　//10マス目をクリックすると値が書き込まれるように
+   //10マス目をクリックすると値が書き込まれるようにする
+   //X” 側と “O” 側が交互に着手できるようにする
+
     
     renderSquare(i) {
       return 
@@ -58,8 +61,9 @@ class Square extends React.Component {
     }
   
     render() {
-      const status = 'Next player: X';
-  
+      const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      //どちらのプレーヤの手番なのかを表示
+      
       return (
         <div>
           <div className="status">{status}</div>
@@ -103,4 +107,25 @@ class Square extends React.Component {
   
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(<Game />);
+
+  function calculateWinner(squares) {
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
+      }
+    }
+    return null;
+  }
   
+  //ゲームが決着して次の手番がなくなった時にそれを表示する
