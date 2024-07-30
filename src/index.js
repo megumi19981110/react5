@@ -24,44 +24,41 @@ function Square(props) {
         //5クリックされた時に state の現在値を表示
       );
     }
-  }
   
   class Board extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        squares: Array(9).fill(null),
-        xIsNext: true,
-      };
-    }
     //6初期 state として 9 個のマス目に対応する 9 個の null 値をセット
     //12先手を “X” にする
 
     handleClick(i) {
-      const squares = this.state.squares.slice();
+       const history = this.state.history;
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
       if (calculateWinner(squares) || squares[i]) {
         return;
       }
       squares[i] = this.state.xIsNext ? 'X' : 'O';
       this.setState({
-        squares: squares,
+        history: history.concat([{
+          squares: squares,
+        }]),
         xIsNext: !this.state.xIsNext,
-      });
+    });
     }
    //10マス目をクリックすると値が書き込まれるようにする
    //13X” 側と “O” 側が交互に着手できるようにする
    //17ゲームの決着が既についている場合やクリックされたマス目が既に埋まっている場合に早期に return する
-
+　　//19新しい履歴エントリを history に追加
     
     renderSquare(i) {
       return 
       <Square 
-      value={this.state.squares[i]}
-      onClick={() => this.handleClick(i)}
+      value={this.props.squares[i]}
+      onClick={() => this.props.onClick(i)}
       />;
       //1valueという値をSquareに渡す
       //7個別の Square に現在の値（'X'、'O' または null）を伝えるようにする
       //8マス目がクリックされた時に Square にその関数を呼んでもらう
+      //18Board コンポーネントが squares と onClick プロパティを Game コンポーネントから受け取るようにする
     }
   
     render() {
@@ -75,10 +72,10 @@ function Square(props) {
       //14どちらのプレーヤの手番なのかを表示
       //16いずれかのプレーヤが勝利したかどうか判定
       
-      return (
-        <div>
-          <div className="status">{status}</div>
-          <div className="board-row">
+      render() {
+        return (
+          <div>
+            <div className="board-row">
             {this.renderSquare(0)}
             {this.renderSquare(1)}
             {this.renderSquare(2)}
@@ -97,22 +94,46 @@ function Square(props) {
       );
     }
   }
+  //ステータステキストに対応するコードは Board 内の render メソッドからは削除
   
   class Game extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        history: [{
+          squares: Array(9).fill(null),
+        }],
+        xIsNext: true,
+      };
+    }
+    //17コンストラクタ内でセット
     render() {
+      const history = this.state.history;
+      const current = history[history.length - 1];
+      const winner = calculateWinner(current.squares);
+      let status;
+      if (winner) {
+        status = 'Winner: ' + winner;
+      } else {
+        status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      }
       return (
         <div className="game">
           <div className="game-board">
-            <Board />
+          <Board
+            squares={current.squares}
+            onClick={(i) => this.handleClick(i)}
+          />
           </div>
           <div className="game-info">
-            <div>{/* status */}</div>
+          <div>{status}</div>
             <ol>{/* TODO */}</ol>
           </div>
         </div>
       );
     }
   }
+  //ゲームのステータステキストの決定や表示の際に最新の履歴が使われるようにする
   
   // ========================================
   
