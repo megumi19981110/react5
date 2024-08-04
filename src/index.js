@@ -9,8 +9,8 @@ function Square(props) {
     </button>
   );
 }
-//4 state を初期化
-//9 Square がクリックされると、Board から渡された onClick 関数がコールされる
+//4 stateを初期化
+//9 Squareがクリックされると、Boardから渡されたonClick関数がコールされる
 //11 シンプルに書くために、React.Componentを継承するクラスを定義する代わりに、propsを入力として受け取り表示すべき内容を返す関数を定義
 
 render() {
